@@ -36,6 +36,8 @@ public class BirdView extends View {
 
     private int screenHeight;
 
+
+
     // Declarations for points ball
     private int pointsBallX;
     private int pointsBallY;
@@ -50,17 +52,27 @@ public class BirdView extends View {
 
     private Paint lifeBallPaint = new Paint();
 
+    // declarations for bomb
+    private Bitmap bomb[] = new Bitmap[1];  // newly added
+    private int bombPosX = 0;
+    private int bombPosY;
+    private int bombSpeed = 15;
+
+
 
     public BirdView(Context context)
     {
         super(context);
 
-        // Background image for the game
+        // get background image for the game from drawable
         background = BitmapFactory.decodeResource(getResources(), R.drawable.sky);
 
-        // Bird image
+        // get bird image from drawable
         bird[0] = BitmapFactory.decodeResource(getResources(), R.drawable.bird11);
         bird[1] = BitmapFactory.decodeResource(getResources(), R.drawable.bird22);
+
+        // get bomb image from drawable
+        bomb[0] = BitmapFactory.decodeResource(getResources(), R.drawable.bomb1);
 
         // Yellow points ball
         pointsBallPaint.setColor(Color.YELLOW);
@@ -82,8 +94,12 @@ public class BirdView extends View {
         life[1] = BitmapFactory.decodeResource(getResources(), R.drawable.heart22);
         life[2] = BitmapFactory.decodeResource(getResources(), R.drawable.heart33);
 
-        // position of the bird on the Y axis
+        // initial position of the bird on the Y axis
         birdPosY = 500;
+
+        // initial position of the bomb
+        bombPosY = -screenHeight;
+
 
     }
 
@@ -98,6 +114,8 @@ public class BirdView extends View {
 
         screenHeight = canvas.getHeight();
 
+
+        // min and max height of the bird
         int minY = bird[0].getHeight();
 
         int maxY = screenHeight - bird[0].getHeight() * 2;
@@ -115,9 +133,10 @@ public class BirdView extends View {
         }
         speed = speed + 5;
 
+        // when user taps on screen
         if(tap)
         {
-            canvas.drawBitmap(bird[1], birdPosX, birdPosY, null  );
+            canvas.drawBitmap(bird[1], birdPosX, birdPosY, null  ); // draw 2nd bitmap to illustrate bird flapping
             tap = false;
         }
         else
@@ -126,56 +145,84 @@ public class BirdView extends View {
         }
 
 
-        // Points ball
+        // send point ball towards the bird
         pointsBallX = pointsBallX - pointsBallSpeed;
 
-        // if collision with yellow point ball then increment score by 10 points
+        // if collided with the bird
         if(testCollision(pointsBallX, pointsBallY))
         {
-            scoreCount = scoreCount + 10;
+            scoreCount = scoreCount + 10; // increment score by 10 points
 
             pointsBallX = -100;
         }
 
-
+        // if points ball is of the screen
         if(pointsBallX < 0)
         {
             pointsBallX = screenWidth + 20;
 
-            pointsBallY = (int) Math.floor(Math.random() * (maxY - minY)) + minY;
+            pointsBallY = (int) Math.floor(Math.random() * (maxY - minY)) + minY;   // set random Y position
         }
 
-        canvas.drawCircle(pointsBallX, pointsBallY, 20, pointsBallPaint);
+        canvas.drawCircle(pointsBallX, pointsBallY, 20, pointsBallPaint);   // draw points ball
 
-        // Life ball
+        // Moves Life ball towards bird
         lifeBallX = lifeBallX - lifeBallSpeed;
 
-        // if collision with yellow point ball then increment score by 10 points
+        // if collided with the bird
         if(testCollision(lifeBallX, lifeBallY))
         {
-            scoreCount = scoreCount + 20;
-
+            scoreCount = scoreCount + 20;   // increase score count by 20
 
             lifeBallX = -100;
         }
 
-
+        // if life ball is off the screen
         if(lifeBallX < 0)
         {
-
             lifeBallX = screenWidth + 20;
 
-            lifeBallY = (int) Math.floor(Math.random() * (maxY - minY)) + minY;
+            lifeBallY = (int) Math.floor(Math.random() * (maxY - minY)) + minY; // set random Y value for life ball
         }
 
-        canvas.drawCircle(lifeBallX, lifeBallY, 30, lifeBallPaint);
+        canvas.drawCircle(lifeBallX, lifeBallY, 30, lifeBallPaint);     // draw life ball
 
 
+        // send bomb towards the bird
+        bombPosX = bombPosX - bombSpeed;
+
+        // min and max Y values of the bomb
+        int bombMinY = bomb[0].getWidth();
+        int bombMaxY = screenHeight - bomb[0].getHeight() * 2;
+
+
+        // if collided with the bird
+        if(testCollision(bombPosX, bombPosY))
+        {
+            scoreCount = scoreCount + 50;
+
+            bombPosX = -100;
+        }
+
+        // if bomb is off the screen
+        if(bombPosX < 0) {
+            bombPosX = screenWidth + 20;
+
+            bombPosY = (int) Math.floor(Math.random() * (bombMaxY - bombMinY)) + bombMinY;  // set random Y values for bomb
+        }
+
+        // display bomb
+        canvas.drawBitmap(bomb[0], bombPosX, bombPosY, null);
+
+        // display score text
         canvas.drawText("Score : " + scoreCount, 20, 60, score);
 
+        // display health
         canvas.drawBitmap(life[0], 800, 10, null);
+
     }
 
+    // test for collision with bird
     public boolean testCollision(int x, int y)
     {
         if (birdPosX < x && x < (birdPosX + bird[0].getWidth()) && birdPosY < y && y < (birdPosY + bird[0].getHeight()) )

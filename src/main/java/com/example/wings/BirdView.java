@@ -18,30 +18,38 @@ public class BirdView extends View {
 
     // Variable Declaration
 
+    // set initial score
     private int scoreCount = 0;
 
+    // set initial health count of the bird
     private int healthCount = 3;
 
+    // bitmap for birds
     private Bitmap bird[] = new Bitmap[2];
 
+    // background image bitmap
     private Bitmap background;
 
+    // set initial user tap to false
     private boolean tap = false;
 
-    private Bitmap life[] = new Bitmap[3];
+    // bitmap image for health icons
+    private Bitmap life[] = new Bitmap[2];
 
     private Paint score = new Paint();
 
+    // set initial X coordinate of bird
     private int birdPosX = 10;
 
+    // Y coordinate of bird
     private int birdPosY;
 
+    // speed of the bird
     private int speed;
 
+    // dimension variables
     private int screenWidth;
-
     private int screenHeight;
-
 
 
     // Declarations for points ball
@@ -68,7 +76,7 @@ public class BirdView extends View {
 
 
 
-
+    // constructor
     public BirdView(Context context)
     {
         super(context);
@@ -121,15 +129,15 @@ public class BirdView extends View {
         // draw background image on canvas
         canvas.drawBitmap(background, 0, 0, null);
 
+        // dimension variables
         screenWidth = canvas.getWidth();
-
         screenHeight = canvas.getHeight();
 
 
         // min and max height of the bird
         int minY = bird[0].getHeight();
-
         int maxY = screenHeight - bird[0].getHeight() * 2;
+
 
         birdPosY = birdPosY + speed;
 
@@ -147,7 +155,11 @@ public class BirdView extends View {
         // when user taps on screen
         if(tap)
         {
-            canvas.drawBitmap(bird[1], birdPosX, birdPosY, null  ); // draw 2nd bitmap to illustrate bird flapping
+
+            // draw 2nd bitmap to illustrate bird flapping
+            canvas.drawBitmap(bird[1], birdPosX, birdPosY, null  );
+
+            // set tap value to false
             tap = false;
         }
         else
@@ -162,7 +174,8 @@ public class BirdView extends View {
         // if collided with the bird
         if(testCollision(pointsBallX, pointsBallY))
         {
-            scoreCount = scoreCount + 10; // increment score by 10 points
+            // increment score by 10 points
+            scoreCount = scoreCount + 10;
 
             pointsBallX = -100;
         }
@@ -170,12 +183,15 @@ public class BirdView extends View {
         // if points ball is of the screen
         if(pointsBallX < 0)
         {
+            // set X coordinate of points ball
             pointsBallX = screenWidth + 20;
 
-            pointsBallY = (int) Math.floor(Math.random() * (maxY - minY)) + minY;   // set random Y position
+            // set Y coordinate randomly of points ball
+            pointsBallY = (int) Math.floor(Math.random() * (maxY - minY)) + minY;
         }
 
-        canvas.drawCircle(pointsBallX, pointsBallY, 20, pointsBallPaint);   // draw points ball
+        // draw points ball
+        canvas.drawCircle(pointsBallX, pointsBallY, 20, pointsBallPaint);
 
         // Moves Life ball towards bird
         lifeBallX = lifeBallX - lifeBallSpeed;
@@ -183,26 +199,31 @@ public class BirdView extends View {
         // if collided with the bird
         if(testCollision(lifeBallX, lifeBallY))
         {
-            scoreCount = scoreCount + 20;   // increase score count by 20
+            // increase score count by 20
+            scoreCount = scoreCount + 20;
 
+            // set x coordinate for the life ball
             lifeBallX = -100;
         }
 
         // if life ball is off the screen
         if(lifeBallX < 0)
         {
+            // set X coordinate of life ball
             lifeBallX = screenWidth + 20;
 
-            lifeBallY = (int) Math.floor(Math.random() * (maxY - minY)) + minY; // set random Y value for life ball
+            // set Y coordinate randomly of life ball
+            lifeBallY = (int) Math.floor(Math.random() * (maxY - minY)) + minY;
         }
 
-        canvas.drawCircle(lifeBallX, lifeBallY, 30, lifeBallPaint);     // draw life ball
+        // Draw life ball
+        canvas.drawCircle(lifeBallX, lifeBallY, 30, lifeBallPaint);
 
 
         // send bomb towards the bird
         bombPosX = bombPosX - bombSpeed;
 
-        // min and max Y values of the bomb
+        // set min and max Y coordinates of the bomb
         int bombMinY = bomb[0].getWidth();
         int bombMaxY = screenHeight - bomb[0].getHeight() * 2;
 
@@ -213,12 +234,22 @@ public class BirdView extends View {
 
 
             healthCount = healthCount -1;
+            // set X coordinate outside the screen of the bomb
             bombPosX = -100;
 
+            // Check if the health is 0
             if(healthCount == 0){
+
+                // Pop up Game Over message
                 Toast.makeText(getContext(), "Game Over", Toast.LENGTH_SHORT).show();
+
+                // Display Game Over page
                 Intent gameOver = new Intent(getContext(), GameOverActivity.class);
+
+                // set intent flag to clear any existing task associated with the activity and create a new activity
                 gameOver.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+                // start activity
                 getContext().startActivity(gameOver);
             }
 
@@ -226,8 +257,10 @@ public class BirdView extends View {
 
         // if bomb is off the screen
         if(bombPosX < 0) {
+            // calculate X coordinate of the Bomb
             bombPosX = screenWidth + 20;
 
+            // calculate Y coordinate randomly of the Bomb
             bombPosY = (int) Math.floor(Math.random() * (bombMaxY - bombMinY)) + bombMinY;  // set random Y values for bomb
         }
 
@@ -238,13 +271,20 @@ public class BirdView extends View {
         canvas.drawText("Score : " + scoreCount, 30, 60, score);
 
         for(int i = 0; i < 3; i++){
+            // set x coordinate for the health icons
             int xPos = (int) (680 + life[0].getWidth() * 1.1 * i);
-            int yPos = 30;
 
+            // set x coordinate for the health icons
+            int yPos = 20;
+
+            // if bird's health is > 1
             if( i < healthCount){
+                // draw red hearts at X and Y coordinate
                 canvas.drawBitmap(life[0], xPos, yPos, null);
             }
             else{
+
+                // draw grey heart at X and Y coordinate
                 canvas.drawBitmap(life[1], xPos, yPos, null);
             }
         }
@@ -267,6 +307,7 @@ public class BirdView extends View {
     {
         if(event.getAction() == MotionEvent.ACTION_DOWN)
         {
+            // set tap value to true
             tap = true;
 
             speed = -40;

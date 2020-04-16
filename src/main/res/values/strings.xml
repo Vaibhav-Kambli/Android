@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Wings</string>
+    <string name="High_Score">High Score</string>
+
 </resources>

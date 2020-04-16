@@ -69,10 +69,16 @@ public class BirdView extends View {
     private Paint redBallPaint = new Paint();
 
     // declarations for bomb
-    private Bitmap bomb[] = new Bitmap[1];  // newly added
+    private Bitmap bomb[] = new Bitmap[1];
     private int bombPosX = 0;
     private int bombPosY;
     private int bombSpeed = 15;
+
+    // declaration for cherry
+    private Bitmap cherry[] = new Bitmap[1];
+    private int cherryPosX = 0;
+    private int cherryPosY;
+    private int cherrySpeed = 15;
 
 
 
@@ -90,6 +96,9 @@ public class BirdView extends View {
 
         // get bomb image from drawable
         bomb[0] = BitmapFactory.decodeResource(getResources(), R.drawable.bomb1);
+
+        //get berry image from drawable folder
+        cherry[0] = BitmapFactory.decodeResource(getResources(), R.drawable.berry11);
 
         // Yellow points ball
         pointsBallPaint.setColor(Color.YELLOW);
@@ -118,6 +127,9 @@ public class BirdView extends View {
 
         // initial position of the bomb
         bombPosY = -screenHeight;
+
+        // initial position of the berry
+        cherryPosY = -screenHeight;
 
 
     }
@@ -177,6 +189,7 @@ public class BirdView extends View {
             // increment score by 10 points
             scoreCount = scoreCount + 10;
 
+            // reset points ball
             pointsBallX = -100;
         }
 
@@ -219,6 +232,32 @@ public class BirdView extends View {
         // Draw life ball
         canvas.drawCircle(lifeBallX, lifeBallY, 30, lifeBallPaint);
 
+        // send berry towards the bird
+        cherryPosX = cherryPosX - cherrySpeed;
+
+        // set min and max Y coordinates of the berry
+        int cherryMinY = cherry[0].getWidth();
+        int cherryMaxY = screenHeight - cherry[0].getHeight() * 2;
+
+
+        // if collided with the bird
+        if(testCollision(cherryPosX, cherryPosY))
+        {
+            // add 50 points to the score
+            scoreCount += 50;
+
+            // reset berry position
+            cherryPosX = -100;
+        }
+
+        if(cherryPosX < 0){
+            // set X coordinate of cherry
+            cherryPosX = screenHeight + 20;
+            cherryPosY = (int) Math.floor(Math.random() * (cherryMaxY - cherryMinY)) + cherryMinY;
+        }
+
+        canvas.drawBitmap(cherry[0], cherryPosX, cherryPosY, null);
+
 
         // send bomb towards the bird
         bombPosX = bombPosX - bombSpeed;
@@ -248,6 +287,8 @@ public class BirdView extends View {
 
                 // set intent flag to clear any existing task associated with the activity and create a new activity
                 gameOver.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+                gameOver.putExtra("High Score", scoreCount);
 
                 // start activity
                 getContext().startActivity(gameOver);

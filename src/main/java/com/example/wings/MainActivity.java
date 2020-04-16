@@ -18,8 +18,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-       // setContentView(R.layout.activity_main);
 
+        // once created, render the BirdView layout on screen
         birdView = new BirdView(this);
         setContentView(birdView);
 

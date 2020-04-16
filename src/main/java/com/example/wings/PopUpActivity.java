@@ -12,6 +12,7 @@ public class PopUpActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pop_up);
 
+        // run this screen for seven seconds
         Thread thread1 = new Thread(){
             @Override
             public void run() {
@@ -22,6 +23,8 @@ public class PopUpActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 finally {
+
+                    // after seven seconds, open MainActivity
                     Intent intent = new Intent(PopUpActivity.this, MainActivity.class);
                     startActivity(intent);
                 }

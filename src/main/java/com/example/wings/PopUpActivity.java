@@ -24,8 +24,8 @@ public class PopUpActivity extends AppCompatActivity {
                 }
                 finally {
 
-                    // after seven seconds, open MainActivity
-                    Intent intent = new Intent(PopUpActivity.this, MainActivity.class);
+                    // after seven seconds, open MenuActivity
+                    Intent intent = new Intent(PopUpActivity.this, MenuActivity.class);
                     startActivity(intent);
                 }
             }

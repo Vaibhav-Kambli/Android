@@ -146,23 +146,41 @@ public class BirdView extends View {
         screenHeight = canvas.getHeight();
 
 
-        // min and max height of the bird
+        // min and max height
         int minY = bird[0].getHeight();
         int maxY = screenHeight - bird[0].getHeight() * 2;
 
 
         birdPosY = birdPosY + speed;
 
+        // top position
         if(birdPosY < minY)
         {
             birdPosY = minY;
         }
 
+        // check collision at the bottom of the screen
         if(birdPosY > maxY)
         {
             birdPosY = maxY;
+
+            // Pop up Game Over message
+            Toast.makeText(getContext(), "Game Over", Toast.LENGTH_SHORT).show();
+
+            // Display Game Over page
+            Intent gameOver = new Intent(getContext(), GameOverActivity.class);
+
+            // set intent flag to clear any existing task associated with the activity and create a new activity
+            gameOver.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+            gameOver.putExtra("High Score", scoreCount);
+
+            // start activity
+            getContext().startActivity(gameOver);
         }
         speed = speed + 5;
+
+
 
         // when user taps on screen
         if(tap)
@@ -277,7 +295,7 @@ public class BirdView extends View {
             bombPosX = -100;
 
             // Check if the health is 0
-            if(healthCount == 0){
+            if(healthCount == 0 ){
 
                 // Pop up Game Over message
                 Toast.makeText(getContext(), "Game Over", Toast.LENGTH_SHORT).show();

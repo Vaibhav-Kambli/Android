@@ -11,6 +11,7 @@ import java.util.TimerTask;
 public class MainActivity extends AppCompatActivity {
 
 
+    // create instance of BirdView class
     private BirdView birdView;
     private Handler handler = new Handler();
     private final static long Interval = 40;
@@ -24,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(birdView);
 
         Timer timer = new Timer();
+        // run the handler thread immediately when it's launched
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
